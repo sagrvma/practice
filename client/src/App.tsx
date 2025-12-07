@@ -1,5 +1,6 @@
 import { Route, Routes, useParams } from "react-router";
 import { allProblems } from "./problemRegistry";
+import Home from "./pages/Home";
 
 const ProblemRenderer = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,12 +17,14 @@ const ProblemRenderer = () => {
 };
 
 const App = () => {
-  <div>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/frontend/:slug" element={<ProblemRenderer />} />
-    </Routes>
-  </div>;
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/frontend/:slug" element={<ProblemRenderer />} />
+      </Routes>
+    </div>
+  );
 };
 
 export default App;
