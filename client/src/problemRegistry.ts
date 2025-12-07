@@ -1,3 +1,5 @@
+//Take the object of all imported problem modules, turn it into an array of [path, module] pairs, loop over each pair, and map it into a nicely structured ProblemEntry object. The result is strongly typed array problems that the rest of the app can use for routing and listing.
+
 import type React from "react";
 
 const modules = import.meta.glob("./problems/frontend/**/*.tsx", {
@@ -6,6 +8,19 @@ const modules = import.meta.glob("./problems/frontend/**/*.tsx", {
 });
 
 //modules now is an object of the type { [path: string] : any}, where any is a module with .default, .meta, whatever the files export
+/*
+{
+  "./problems/frontend/UserDirectory.tsx": {
+    default: [Function UserDirectoryComponent],
+    meta: { title: "User Directory Filter", category: "frontend" }
+  },
+  "./problems/frontend/AnotherProblem.tsx": {
+    default: [Function AnotherProblemComponent],
+    meta: { title: "Another Problem", category: "frontend" }
+  },
+  // ...etc for every .tsx file matching the glob
+}
+*/
 
 //Define the shape of each problem in my registry
 export type ProblemEntry = {
@@ -22,6 +37,7 @@ const toSlug = (name: string) =>
   name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase(); //Finds the first place where a lowercase character is immediately followed by an uppercase and inserts a hyphen between them, converts the whole thing to lowercase
 
 const problems: ProblemEntry[] = Object.entries(modules).map(
+  //Object.entries() converts an object {key :value} into an array [key, value]
   ([path, mod]: any) => {
     // path example: "./problems/frontend/UserDirectory.tsx"
     const filename = path.split("/").pop()!.replace(".tsx", ""); //"UserDirectory"
