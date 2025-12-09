@@ -1,3 +1,5 @@
+import "./UserDirectory.css";
+
 import { useEffect, useState } from "react";
 
 const users_API = "https://jsonplaceholder.typicode.com/users";
