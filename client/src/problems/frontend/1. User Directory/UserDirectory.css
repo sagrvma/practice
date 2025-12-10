@@ -1,16 +1,16 @@
-div {
+.user-directory {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
   border-radius: 5px;
 }
 
-h1 {
+.user-directory-title {
   margin-bottom: 20px;
-  color: #f8f8f8;
+  color: #333;
 }
 
-input {
+.user-directory-search {
   width: 100%;
   padding: 8px;
   margin-bottom: 15px;
@@ -19,18 +19,20 @@ input {
   font-size: 14px;
 }
 
-ul {
+.user-directory-list {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-li {
+.user-directory-item {
   padding: 10px;
   margin-bottom: 5px;
   border-left: 3px solid #007bff;
   border-radius: 3px;
 }
 
-p {
+.user-directory-message {
   text-align: center;
   color: #666;
 }

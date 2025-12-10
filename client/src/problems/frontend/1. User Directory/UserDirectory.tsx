@@ -1,6 +1,7 @@
 import "./UserDirectory.css";
 
 import { useEffect, useState } from "react";
+import "./UserDirectory.css";
 
 const users_API = "https://jsonplaceholder.typicode.com/users";
 
@@ -56,32 +57,32 @@ const UserDirectory = () => {
     user.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="user-directory-message">Loading...</p>;
+  if (error) return <p className="user-directory-message">{error}</p>;
 
   return (
-    <>
-      <h1>User Directory</h1>
+    <div className="user-directory">
+      <h1 className="user-directory-title">User Directory</h1>
       <input
+        className="user-directory-search"
         type="text"
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value);
         }}
       />
-      <h2>{searchText}</h2>
       {filteredList.length === 0 ? (
-        <p>No users found.</p>
+        <p className="user-directory-message">No users found.</p>
       ) : (
-        <ul>
+        <ul className="user-directory-list">
           {filteredList.map((user) => (
-            <li key={user.id}>
+            <li key={user.id} className="user-directory-item">
               {user.name} - {user.email}
             </li>
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 
