@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./TodoList.css";
 
 type todo = {
   id: number;
@@ -32,15 +33,22 @@ const TodoList = () => {
   };
 
   return (
-    <>
+    <div className="todo-list">
       <input
+        className="todo-list-input"
         type="text"
         value={inputText}
         onChange={(e) => {
           setInputText(e.target.value);
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            addTodo(inputText);
+          }
+        }}
       />
       <button
+        className="todo-list-button"
         type="button"
         onClick={() => {
           addTodo(inputText);
@@ -49,14 +57,15 @@ const TodoList = () => {
         +
       </button>
       {todoList.length === 0 ? (
-        <p>No todos yet.</p>
+        <p className="todo-list-message">No todos yet.</p>
       ) : (
-        <ul>
+        <ul className="todo-list-list">
           {todoList.map((item) => (
-            <li key={item.id}>
-              <input type="checkbox" />
-              {item.text}
+            <li key={item.id} className="todo-list-item">
+              <input className="todo-list-item-checkbox" type="checkbox" />
+              <span className="todo-list-item-text">{item.text}</span>
               <button
+                className="todo-list-delete-btn"
                 type="button"
                 onClick={() => {
                   removeTodo(item.id);
@@ -68,7 +77,7 @@ const TodoList = () => {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 
