@@ -1,0 +1,54 @@
+.formWrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  background-color: rgb(63, 63, 63);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 50px;
+  border-radius: 5px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.formInput {
+  width: 300px;
+  padding: 15px;
+  font-size: 18px;
+  margin-top: 10px;
+  background-color: rgb(44, 44, 44);
+  border: none;
+  border-radius: 5px;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.formButton {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 10px 30px;
+  font-size: 24px;
+  cursor: pointer;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid red;
+  transition: ease all 0.2s;
+  font-weight: 500;
+}
+
+.formButton:active {
+  background-color: brown;
+}
