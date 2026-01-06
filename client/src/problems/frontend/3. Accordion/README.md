@@ -1,98 +1,181 @@
-Step 1 – Problem statement: Basic Accordion
-Build an Accordion component with multiple items.
+Problem Statement (README)
+Single-Open Accordion Component
 
+Build an Accordion component with multiple items where only one item can be open at a time:
+
+text
 Requirements:
 
-Data-driven items
-
-Have an array of items: each with id, title, and content.
-
-Single-open behavior
-
-Only one item can be open at a time.
-
-Clicking an item’s header:
-
-If it’s closed → open it.
-
-If it’s already open → close it (so everything is collapsed).
-
-UI
-
-Show all item titles as clickable headers (like buttons or divs).
-
-Below the open item’s title, show its content.
-
-Closed items show only their title.
-
-State shape
-
-Use one piece of state to track which item is open (e.g., openItemId or null).
-
-What state does this Accordion manage and why?
-It manages openItemId: number | null, which tracks which single item is open. null means all are collapsed.
-
-How does clicking a title open/close an item?
-Via handleClick(item.id):
-
-ts
-const handleClick = (itemId: number) => {
-if (itemId === openItemId) setOpenItemId(null);
-else setOpenItemId(itemId);
-};
-Same ID → close; different ID → open that one.
-
-How is conditional rendering used to show content?
+1. Data: Array of { id, title, content }
+2. State: Single `openItemId: number | null`
+3. Click title → toggle that item (open if closed, close if open)
+4. UI: Always show titles, show content only for active item
+5. Edge case: Start with first item open OR all collapsed
+   Your Solution (Key Patterns):
 
 tsx
-{item.id === openItemId && (
+const [openItemId, setOpenItemId] = useState(1); // Single state
 
-  <p className="accordion-item-content">{item.content}</p>
-)}
-The content is rendered only when the condition is true.
+const handleClick = (id) => openItemId === id ? setOpenItemId(null) : setOpenItemId(id);
 
-Why is accordionItems defined outside the component?
-It’s static data, so defining it outside avoids recreating the array on every render and keeps the component pure.
+{item.id === openItemId && <p>{item.content}</p>} // Derived rendering
+📋 Complete Interview Q&A (15+ Questions)
+Core Concepts (Must Know)
 
-How do you ensure only one item is open at a time?
-By using a single openItemId instead of a boolean per item. Setting it to one ID implicitly closes all others.
+1. What single piece of state controls the entire accordion?
 
-How would you change this to allow multiple items open at once?
-Change state to something like openIds: number[] and toggle membership:
+text
+openItemId: number | null
 
-ts
+- null = all collapsed
+- any number = that item's ID is open
+- Only ONE value needed (not booleans per item)
+
+2. Walk through the click handler logic:
+
+text
+if (clickedId === openItemId) {
+setOpenItemId(null); // Close current (toggle off)
+} else {
+setOpenItemId(clickedId); // Open new one (closes others implicitly)
+}
+Why it works: Single state means setting new ID automatically closes previous.
+
+3. How is content conditionally rendered?
+
+tsx
+{item.id === openItemId && <p>{item.content}</p>}
+Derived state: "Is item open?" computed from openItemId, never stored separately.
+
+State & Architecture 4. Why number | null instead of just number?
+
+text
+null = "no item open" (all collapsed state)
+If only numbers: how represent "all closed"? 5. Why define static data OUTSIDE component?
+
+text
+const accordionItems = [...]; // ✅ Outside (no re-creation)
+
+vs
+const accordionItems = [...]; // ❌ Inside (new array every render)
+Performance: Static data shouldn't recreate on re-renders.
+
+6. Initial state: 1 vs null?
+
+text
+useState(1) → First item open
+useState(null) → All collapsed
+Both valid; interviewer specifies or "all collapsed" is default
+React Patterns 7. What React key is used and why?
+
+tsx
+{accordionItems.map(item => <li key={item.id}>...)}
+Answer: item.id - stable, unique identifier. Never use index for lists that reorder/toggle.
+
+8. Is there derived state here? Explain.
+
+text
+Yes: "isItemOpen" = item.id === openItemId
+Computed every render from existing state, never stored in useState 9. Multiple open items - how change?
+
+tsx
+// Instead of single ID:
 const [openIds, setOpenIds] = useState<number[]>([]);
-// toggle: add/remove id from the array
-What is the role of the key prop here?
+
+// Toggle logic:
+setOpenIds(prev =>
+prev.includes(id)
+? prev.filter(openId => openId !== id)
+: [...prev, id]
+);
+Render: {openIds.includes(item.id) && <Content>}
+
+Accessibility & UX 10. Why use <button> not <h2> for titles?
+
+text
+<button> → Semantic, focusable, keyboard accessible (Enter/Space)
+
+<h2 onClick> → Requires extra ARIA + keyboard handlers
+Production: <button aria-expanded={item.id === openItemId} aria-controls={contentId}>
+
+11. Keyboard accessibility implementation?
 
 tsx
+<button
+onClick={() => handleClick(id)}
+onKeyDown={(e) => {
+if (e.key === 'Enter' || e.key === ' ') {
+e.preventDefault();
+handleClick(id);
+}
+}}
 
-<li key={item.id}>
-It gives each list item a stable identity so React can correctly reconcile changes when the list updates.
+> Performance & Edge Cases 12. What happens if new item added to accordionItems?
 
-Why might you use a <button> instead of <h2> for the clickable title?
-For accessibility and semantics—buttons are focusable and have built-in keyboard interaction; h2 would need extra attributes and handlers.
+text
+Automatically renders new <li> with unique key
+Click works immediately (state logic doesn't change) 13. Race condition risk?
 
-What is the initial state and what does it mean for the UI?
+text
+None - synchronous state updates, single source of truth
+No async operations or competing state 14. 1000 items performance?
 
-ts
-const [openItemId, setOpenItemId] = useState<number | null>(1);
-Item with id: 1 starts open when the component first renders.
+text
+✅ Virtualize with react-window or dynamic height
+✅ Memoize handleClick if passed as prop
+Current: Fine for <50 items
+Follow-up Questions (Interviewer Escalation) 15. Add smooth height animation:
 
-How would you start with everything collapsed?
+css
+.accordion-content {
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease;
+}
+.accordion-content.open {
+max-height: 200px; /_ JS calculated or fixed _/
+} 16. Persist open state to localStorage:
 
-ts
-const [openItemId, setOpenItemId] = useState<number | null>(null);
-Then no item’s content matches, so all are closed initially.
+tsx
+useEffect(() => {
+localStorage.setItem('accordion-open', openItemId?.toString() || 'null');
+}, [openItemId]);
 
-What happens if you add a new accordion item to accordionItems?
-It will automatically render another list item. Behavior still works as long as it has a unique id, title, and content.
+useEffect(() => {
+const saved = localStorage.getItem('accordion-open');
+if (saved) setOpenItemId(parseInt(saved));
+}, []); 17. Controlled from parent (not local state):
 
-Is there any derived state here?
-Yes, “is this item open?” is derived by item.id === openItemId instead of storing a separate boolean per item.
+tsx
+// Parent
+const [openId, setOpenId] = useState(null);
+<Accordion openItemId={openId} onToggle={setOpenId} />
 
-How would you animate the open/close behavior?
-Use CSS transitions on height/opacity for .accordion-item-content, or a library like react-transition-group.
+// Child becomes controlled
+{item.id === openItemId && <Content />}
+Common Mistakes to Avoid (Interview Traps)
+❌ WRONG:
 
-How might you improve accessibility for this Accordion?
-Use button for the trigger, add aria-expanded, aria-controls, IDs for content panels, and support keyboard interaction (Enter/Space).
+tsx
+// Per-item booleans (overkill)
+const [items, setItems] = useState(items.map(() => false)); // Complex sync
+
+// Index as key
+{accordionItems.map((item, index) => <li key={index}>}) // Reorder bugs
+
+// Mutation
+const handleClick = (id) => {
+openItemId = id; // Direct mutation!
+}
+✅ RIGHT: Single openItemId, key={item.id}, immutable setState.
+
+🎯 Interview Talking Points
+"Single source of truth" - One state variable controls entire UI
+
+"Derived state pattern" - No per-item booleans needed
+
+"Declarative rendering" - {condition && <Content>} reads naturally
+
+"Stable keys matter" - item.id prevents reconciliation bugs
+
+Time to solve: 8-12 minutes (mid-level)
