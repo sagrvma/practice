@@ -28,7 +28,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     color: theme === "light" ? "#000000" : "#ffffff",
     backgroundColor: theme === "light" ? "#ffffff" : "#000000",
     minHeight: "100vh",
-    transition: "all 0.3 ease",
+    transition: "all 0.3s ease",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   };
 
   return (

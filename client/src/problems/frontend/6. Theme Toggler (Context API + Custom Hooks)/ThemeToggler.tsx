@@ -1,11 +1,17 @@
-import "./ThemeToggler.css";
 import { ThemeProvider } from "./Context/ThemeProvider";
 import ThemeButton from "./Components/ThemeButton";
 
 const ThemeToggler = () => {
   return (
     <ThemeProvider>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
         <h1>Theme Toggler using Context API and Custom Hooks</h1>
         <ThemeButton />
       </div>
