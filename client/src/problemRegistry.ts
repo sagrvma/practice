@@ -36,26 +36,31 @@ export type ProblemEntry = {
 const toSlug = (name: string) =>
   name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase(); //Finds the first place where a lowercase character is immediately followed by an uppercase and inserts a hyphen between them, converts the whole thing to lowercase
 
-const problems: ProblemEntry[] = Object.entries(modules).map(
-  //Object.entries() converts an object {key :value} into an array [key, value]
-  ([path, mod]: any) => {
-    // path example: "./problems/frontend/UserDirectory.tsx"
-    const filename = path.split("/").pop()!.replace(".tsx", ""); //"UserDirectory"
-    const slug = toSlug(filename); //"user-directory"
-    const meta = mod.meta ?? {};
-    const title = meta.title ?? filename.replace(/([a-z])([A-Z])/g, "$1 $2"); //fallback "User Directory"
-    const Component = mod.default;
+const problems: ProblemEntry[] = Object.entries(modules)
+  .map(
+    //Object.entries() converts an object {key :value} into an array [key, value]
+    ([path, mod]: any) => {
+      if (!mod.meta) {
+        return null;
+      }
+      // path example: "./problems/frontend/UserDirectory.tsx"
+      const filename = path.split("/").pop()!.replace(".tsx", ""); //"UserDirectory"
+      const slug = toSlug(filename); //"user-directory"
+      const meta = mod.meta ?? {};
+      const title = meta.title ?? filename.replace(/([a-z])([A-Z])/g, "$1 $2"); //fallback "User Directory"
+      const Component = mod.default;
 
-    return {
-      id: `frontend-${slug}`,
-      slug,
-      path: `/frontend/${slug}`,
-      title,
-      category: "frontend",
-      Component,
-    };
-  }
-);
+      return {
+        id: `frontend-${slug}`,
+        slug,
+        path: `/frontend/${slug}`,
+        title,
+        category: "frontend",
+        Component,
+      };
+    }
+  )
+  .filter((p): p is ProblemEntry => p !== null);
 
 export const allProblems = problems;
 export const frontendProblems = problems; //Same for now, can later be changed and split amongst backend too
