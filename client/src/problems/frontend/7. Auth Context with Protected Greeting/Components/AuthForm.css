@@ -1,0 +1,16 @@
+.formWrapper {
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputText {
+  font-size: 1.5em;
+  padding: 5px 10px;
+}
+
+.btn {
+  font-size: 1.1em;
+  margin-top: 20px;
+  padding: 0.5em 1.5em;
+}

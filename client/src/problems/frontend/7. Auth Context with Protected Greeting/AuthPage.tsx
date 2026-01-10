@@ -1,11 +1,14 @@
 import AuthForm from "./Components/AuthForm";
+import Greeting from "./Components/Greeting";
 import { AuthProvider } from "./Context/AuthProvider";
+import "./AuthPage.css";
 
 const AuthPage = () => {
   return (
     <AuthProvider>
-      <div>
-        <h1>Auth Page</h1>
+      <div className="wrapper">
+        <div className="title">Auth Page</div>
+        <Greeting />
         <AuthForm />
       </div>
     </AuthProvider>
